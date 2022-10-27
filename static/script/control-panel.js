@@ -3,7 +3,7 @@ import {paint} from './paint.js'
 
 function toggleActiveCar() {
     let cars = document.querySelector('#cars')
-    controlPanel.getSelectedCar(cars).classList.toggle('selected-car')
+    controlPanel.getSelectedCar().classList.toggle('selected-car')
 
     if (cars.options.length - 1 == cars.selectedIndex) {
         cars.selectedIndex = 0
@@ -11,7 +11,7 @@ function toggleActiveCar() {
         cars.selectedIndex = cars.selectedIndex + 1
     }
 
-    controlPanel.getSelectedCar(cars).classList.toggle('selected-car')
+    controlPanel.getSelectedCar().classList.toggle('selected-car')
 }
 
 function newCarAndUpdateUi() {

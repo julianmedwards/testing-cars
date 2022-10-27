@@ -1,25 +1,29 @@
 'use strict'
 
+var expect = chai.expect
+
 import {controlPanel} from '../script/control-panel.js'
 import {drive} from '../script/drive.js'
 
 describe('Buttons', function () {
-    let getButton, dummyButton
+    let getButton, dummyElement
+    before(function () {
+        sinon.restore()
+    })
     beforeEach(function () {
         getButton = sinon.stub(document, 'querySelector')
-        dummyButton = document.createElement('btn')
-        getButton.returns(dummyButton)
+        dummyElement = document.createElement('btn')
+        getButton.returns(dummyElement)
     })
     afterEach(function () {
         sinon.restore()
     })
-    describe('selectings car with dropdown', function () {})
     describe("clicking 'new car'", function () {
         let listenerTarget, listener
         let listenerName = 'newCarAndUpdateUi'
         it("should append '" + listenerName + "' eventListener", function () {
             listener = sinon.stub(controlPanel, listenerName)
-            listenerTarget = sinon.spy(dummyButton, 'addEventListener')
+            listenerTarget = sinon.spy(dummyElement, 'addEventListener')
 
             controlPanel.addNewCarBtn()
 
@@ -30,7 +34,7 @@ describe('Buttons', function () {
             listener = sinon.stub(controlPanel, listenerName)
             controlPanel.addNewCarBtn()
 
-            dummyButton.click()
+            dummyElement.click()
             sinon.assert.calledOnce(listener)
         })
     })
@@ -39,7 +43,7 @@ describe('Buttons', function () {
         let listenerName = 'turnRight'
         it("should append '" + listenerName + "' eventListener", function () {
             listener = sinon.stub(drive, listenerName)
-            listenerTarget = sinon.spy(dummyButton, 'addEventListener')
+            listenerTarget = sinon.spy(dummyElement, 'addEventListener')
 
             controlPanel.addTurnRightBtn()
 
@@ -50,7 +54,7 @@ describe('Buttons', function () {
             listener = sinon.stub(drive, listenerName)
             controlPanel.addTurnRightBtn()
 
-            dummyButton.click()
+            dummyElement.click()
             sinon.assert.calledOnce(listener)
         })
     })
@@ -59,7 +63,7 @@ describe('Buttons', function () {
         let listenerName = 'turnLeft'
         it("should append '" + listenerName + "' eventListener", function () {
             listener = sinon.stub(drive, listenerName)
-            listenerTarget = sinon.spy(dummyButton, 'addEventListener')
+            listenerTarget = sinon.spy(dummyElement, 'addEventListener')
 
             controlPanel.addTurnLeftBtn()
 
@@ -70,7 +74,7 @@ describe('Buttons', function () {
             listener = sinon.stub(drive, listenerName)
             controlPanel.addTurnLeftBtn()
 
-            dummyButton.click()
+            dummyElement.click()
             sinon.assert.calledOnce(listener)
         })
     })
@@ -79,7 +83,7 @@ describe('Buttons', function () {
         let listenerName = 'forward'
         it("should append '" + listenerName + "' eventListener", function () {
             listener = sinon.stub(drive, listenerName)
-            listenerTarget = sinon.spy(dummyButton, 'addEventListener')
+            listenerTarget = sinon.spy(dummyElement, 'addEventListener')
 
             controlPanel.addForwardBtn()
 
@@ -90,7 +94,7 @@ describe('Buttons', function () {
             listener = sinon.stub(drive, listenerName)
             controlPanel.addForwardBtn()
 
-            dummyButton.click()
+            dummyElement.click()
             sinon.assert.calledOnce(listener)
         })
     })
@@ -99,7 +103,7 @@ describe('Buttons', function () {
         let listenerName = 'reverse'
         it("should append '" + listenerName + "' eventListener", function () {
             listener = sinon.stub(drive, listenerName)
-            listenerTarget = sinon.spy(dummyButton, 'addEventListener')
+            listenerTarget = sinon.spy(dummyElement, 'addEventListener')
 
             controlPanel.addReverseBtn()
 
@@ -110,7 +114,7 @@ describe('Buttons', function () {
             listener = sinon.stub(drive, listenerName)
             controlPanel.addReverseBtn()
 
-            dummyButton.click()
+            dummyElement.click()
             sinon.assert.calledOnce(listener)
         })
     })
@@ -123,6 +127,7 @@ describe('Keyboard controls', function () {
         forward,
         reverse
     before(function () {
+        sinon.restore()
         toggleActiveCar = sinon.stub(controlPanel, 'toggleActiveCar')
         newCarAndUpdateUi = sinon.stub(controlPanel, 'newCarAndUpdateUi')
         turnRight = sinon.stub(drive, 'turnRight')
@@ -233,6 +238,134 @@ describe('Keyboard controls', function () {
             document.dispatchEvent(new KeyboardEvent('keydown', {keyCode: 39}))
             document.dispatchEvent(new KeyboardEvent('keydown', {keyCode: 37}))
             sinon.assert.calledOnce(reverse)
+        })
+    })
+})
+
+describe('Car selection', function () {
+    let carsSelector
+    let cars, c1, c2, c3
+    before(function () {
+        sinon.restore()
+    })
+    beforeEach(function () {
+        cars = document.createElement('select')
+        cars.id = 'cars'
+        c1 = document.createElement('option')
+        c1.value = 'c1'
+        c2 = document.createElement('option')
+        c2.value = 'c2'
+        c3 = document.createElement('option')
+        c3.value = 'c3'
+    })
+    afterEach(function () {
+        sinon.restore()
+    })
+    describe('getSelectedCar() return based on dropdown selection', function () {
+        it('should return c1 with first option', function () {
+            cars.append(c1)
+
+            carsSelector = sinon.stub(document, 'querySelector')
+            carsSelector.returns(cars)
+            controlPanel.getSelectedCar()
+
+            expect(cars.selectedIndex).to.equal(0)
+            expect(cars[cars.selectedIndex].value).to.equal('c1')
+        })
+        it('should return c2 with second option', function () {
+            cars.append(c1, c2, c3)
+            cars.selectedIndex = 1
+
+            carsSelector = sinon.stub(document, 'querySelector')
+            carsSelector.returns(cars)
+            controlPanel.getSelectedCar()
+
+            expect(cars.selectedIndex).to.equal(1)
+            expect(cars[cars.selectedIndex].value).to.equal('c2')
+        })
+        it('should return c3 with third option', function () {
+            cars.append(c1, c2, c3)
+            cars.selectedIndex = 2
+
+            carsSelector = sinon.stub(document, 'querySelector')
+            carsSelector.returns(cars)
+            controlPanel.getSelectedCar()
+
+            expect(cars.selectedIndex).to.equal(2)
+            expect(cars[cars.selectedIndex].value).to.equal('c3')
+        })
+        it('should return c2, c1, c3 if each selected in succession', function () {
+            cars.append(c1, c2, c3)
+
+            carsSelector = sinon.stub(document, 'querySelector')
+            carsSelector.returns(cars)
+
+            cars.selectedIndex = 1
+            controlPanel.getSelectedCar()
+            expect(cars.selectedIndex).to.equal(1)
+            expect(cars[cars.selectedIndex].value).to.equal('c2')
+
+            cars.selectedIndex = 0
+            controlPanel.getSelectedCar()
+            expect(cars.selectedIndex).to.equal(0)
+            expect(cars[cars.selectedIndex].value).to.equal('c1')
+
+            cars.selectedIndex = 2
+            controlPanel.getSelectedCar()
+            expect(cars.selectedIndex).to.equal(2)
+            expect(cars[cars.selectedIndex].value).to.equal('c3')
+        })
+    })
+    describe('toggleActiveCar()', function () {
+        it('should throw TypeError if called with no cars present', function () {
+            carsSelector = sinon.stub(document, 'querySelector')
+            carsSelector.returns(cars)
+            expect(controlPanel.toggleActiveCar).to.throw(TypeError)
+        })
+        it('should select c1 if called with 1 car present', function () {
+            cars.append(c1)
+
+            carsSelector = sinon.stub(document, 'querySelector')
+            carsSelector.returns(cars)
+            controlPanel.toggleActiveCar()
+
+            expect(cars.selectedIndex).to.equal(0)
+            expect(cars[cars.selectedIndex].value).to.equal('c1')
+        })
+        it('should select c2 if 2 cars present', function () {
+            cars.append(c1, c2)
+
+            carsSelector = sinon.stub(document, 'querySelector')
+            carsSelector.returns(cars)
+            controlPanel.toggleActiveCar()
+
+            expect(cars.selectedIndex).to.equal(1)
+            expect(cars[cars.selectedIndex].value).to.equal('c2')
+        })
+        it('should select c3 if 3 cars present after calling twice', function () {
+            cars.append(c1, c2, c3)
+
+            carsSelector = sinon.stub(document, 'querySelector')
+            carsSelector.returns(cars)
+
+            controlPanel.toggleActiveCar()
+            expect(cars.selectedIndex).to.equal(1)
+            expect(cars[cars.selectedIndex].value).to.equal('c2')
+
+            controlPanel.toggleActiveCar()
+            expect(cars.selectedIndex).to.equal(2)
+            expect(cars[cars.selectedIndex].value).to.equal('c3')
+        })
+        it('should select c1 if 3 cars present with c3 selected', function () {
+            cars.append(c1, c2, c3)
+            cars.selectedIndex = 2
+
+            carsSelector = sinon.stub(document, 'querySelector')
+            carsSelector.returns(cars)
+            controlPanel.toggleActiveCar()
+
+            expect(cars.selectedIndex).to.equal(0)
+            expect(cars[cars.selectedIndex].value).to.equal('c1')
         })
     })
 })
