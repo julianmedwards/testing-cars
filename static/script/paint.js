@@ -16,3 +16,7 @@ function randomCarArtId() {
     let id = Math.floor(Math.random() * 7) + 1
     return 'car' + id
 }
+
+export const paint = {
+    addCar,
+}

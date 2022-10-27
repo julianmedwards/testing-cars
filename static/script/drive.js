@@ -1,3 +1,5 @@
+import {controlPanel} from './control-panel.js'
+
 const FORWARD = 'FORWARD'
 const REVERSE = 'REVERSE'
 const NORTH = 'NORTH'
@@ -7,24 +9,28 @@ const WEST = 'WEST'
 const RIGHT = 'RIGHT'
 const LEFT = 'LEFT'
 
-function reverse(car) {
-    let direction = getDirection(car)
-    moveIt(car, direction, REVERSE)
+function reverse() {
+    let car = controlPanel.getSelectedCar()
+    let direction = drive.getDirection(car)
+    drive.moveIt(car, direction, REVERSE)
 }
 
-function forward(car) {
-    let direction = getDirection(car)
-    moveIt(car, direction, FORWARD)
+function forward() {
+    let car = controlPanel.getSelectedCar()
+    let direction = drive.getDirection(car)
+    drive.moveIt(car, direction, FORWARD)
 }
 
-function turnRight(car) {
-    let direction = getDirection(car)
-    turnIt(car, direction, RIGHT)
+function turnRight() {
+    let car = controlPanel.getSelectedCar()
+    let direction = drive.getDirection(car)
+    drive.turnIt(car, direction, RIGHT)
 }
 
-function turnLeft(car) {
-    let direction = getDirection(car)
-    turnIt(car, direction, LEFT)
+function turnLeft() {
+    let car = controlPanel.getSelectedCar()
+    let direction = drive.getDirection(car)
+    drive.turnIt(car, direction, LEFT)
 }
 
 function turnIt(car, direction, cmd) {
@@ -127,4 +133,14 @@ function getDirection(car) {
         direction = WEST
     }
     return direction
+}
+
+export const drive = {
+    reverse,
+    forward,
+    turnRight,
+    turnLeft,
+    turnIt,
+    moveIt,
+    getDirection,
 }
