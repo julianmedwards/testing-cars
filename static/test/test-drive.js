@@ -126,7 +126,6 @@ describe('Moving car element', function () {
         car.style.left = '0px'
     })
     afterEach(function () {
-        console.log(cmd)
         sinon.restore()
     })
     describe('drive.moveIt()', function () {
@@ -281,5 +280,122 @@ describe('Moving car element', function () {
             })
         })
     })
-    describe('drive.turnIt()', function () {})
+    describe('drive.turnIt()', function () {
+        describe('exchanges car direction classes.', function () {
+            describe('When turning LEFT', function () {
+                beforeEach(function () {
+                    cmd = drive.POS.LEFT
+                })
+                it('should turn from north to west', function () {
+                    direction = drive.POS.NORTH
+                    car.classList.add('north')
+
+                    drive.turnIt(car, direction, cmd)
+
+                    expect(Array.from(car.classList)).to.not.include(
+                        'north',
+                        'south',
+                        'east'
+                    )
+                    expect(Array.from(car.classList)).to.include('west')
+                })
+                it('should turn from west to south', function () {
+                    direction = drive.POS.WEST
+                    car.classList.add('west')
+
+                    drive.turnIt(car, direction, cmd)
+
+                    expect(Array.from(car.classList)).to.not.include(
+                        'west',
+                        'east',
+                        'north'
+                    )
+                    expect(Array.from(car.classList)).to.include('south')
+                })
+                it('should turn from south to east', function () {
+                    direction = drive.POS.SOUTH
+                    car.classList.add('south')
+
+                    drive.turnIt(car, direction, cmd)
+
+                    expect(Array.from(car.classList)).to.not.include(
+                        'south',
+                        'west',
+                        'north'
+                    )
+                    expect(Array.from(car.classList)).to.include('east')
+                })
+                it('should turn from east to north', function () {
+                    direction = drive.POS.EAST
+                    car.classList.add('east')
+
+                    drive.turnIt(car, direction, cmd)
+
+                    expect(Array.from(car.classList)).to.not.include(
+                        'east',
+                        'south',
+                        'west'
+                    )
+                    expect(Array.from(car.classList)).to.include('north')
+                })
+            })
+            describe('When turning RIGHT', function () {
+                beforeEach(function () {
+                    cmd = drive.POS.RIGHT
+                })
+                it('should turn from north to east', function () {
+                    direction = drive.POS.NORTH
+                    car.classList.add('north')
+
+                    drive.turnIt(car, direction, cmd)
+
+                    expect(Array.from(car.classList)).to.not.include(
+                        'north',
+                        'west',
+                        'south'
+                    )
+                    expect(Array.from(car.classList)).to.include('east')
+                })
+                it('should turn from east to south', function () {
+                    direction = drive.POS.EAST
+                    car.classList.add('east')
+
+                    drive.turnIt(car, direction, cmd)
+
+                    expect(Array.from(car.classList)).to.not.include(
+                        'east',
+                        'west',
+                        'north'
+                    )
+                    expect(Array.from(car.classList)).to.include('south')
+                })
+                it('should turn from south to west', function () {
+                    direction = drive.POS.SOUTH
+                    car.classList.add('south')
+
+                    drive.turnIt(car, direction, cmd)
+
+                    expect(Array.from(car.classList)).to.not.include(
+                        'south',
+                        'east',
+                        'north'
+                    )
+                    expect(Array.from(car.classList)).to.include('west')
+                })
+                it('should turn from west to north', function () {
+                    direction = drive.POS.WEST
+                    car.classList.add('west')
+
+                    drive.turnIt(car, direction, cmd)
+
+                    expect(Array.from(car.classList)).to.not.include(
+                        'west',
+                        'south',
+                        'east'
+                    )
+                    expect(Array.from(car.classList)).to.include('north')
+                })
+            })
+        })
+    })
 })
