@@ -2,18 +2,9 @@
 
 var expect = chai.expect
 
+import {controlPanel} from '../script/control-panel.js'
 import {drive} from '../script/drive.js'
 
-describe('drive.moveIt()', function () {
-    before(function () {
-        sinon.restore()
-    })
-})
-describe('drive.turnIt()', function () {
-    before(function () {
-        sinon.restore()
-    })
-})
 describe('drive.getDirection()', function () {
     let car
     before(function () {
@@ -22,6 +13,9 @@ describe('drive.getDirection()', function () {
     beforeEach(function () {
         car = document.createElement('div')
         car.classList.add('car', 'car1')
+    })
+    afterEach(function () {
+        sinon.restore()
     })
     it("should return NORTH when car has 'north' class", function () {
         car.classList.add('north')
@@ -48,23 +42,244 @@ describe('drive.getDirection()', function () {
         expect(direction).to.equal('')
     })
 })
-describe('drive.turnRight()', function () {
+
+describe('Move commands', function () {
+    let car, getCar, direction, getDirection, moveOrTurn
     before(function () {
         sinon.restore()
+    })
+    beforeEach(function () {
+        getCar = sinon.stub(controlPanel, 'getSelectedCar')
+        car = document.createElement('div')
+        car.classList.add('car', 'car1')
+        getCar.returns(car)
+
+        getDirection = sinon.stub(drive, 'getDirection')
+        direction = drive.POS.NORTH
+        getDirection.returns(direction)
+    })
+    afterEach(function () {
+        sinon.restore()
+    })
+    describe('drive.turnRight()', function () {
+        it('should call drive.turnIt with correct args', function () {
+            moveOrTurn = sinon.spy(drive, 'turnIt')
+            drive.turnRight()
+            sinon.assert.calledOnceWithExactly(
+                moveOrTurn,
+                car,
+                direction,
+                drive.POS.RIGHT
+            )
+        })
+    })
+    describe('drive.turnLeft()', function () {
+        it('should call drive.turnIt with correct args', function () {
+            moveOrTurn = sinon.spy(drive, 'turnIt')
+            getDirection.returns(drive.POS.NORTH)
+            drive.turnLeft()
+            sinon.assert.calledOnceWithExactly(
+                moveOrTurn,
+                car,
+                direction,
+                drive.POS.LEFT
+            )
+        })
+    })
+    describe('drive.forward()', function () {
+        it('should call drive.moveIt with correct args', function () {
+            moveOrTurn = sinon.spy(drive, 'moveIt')
+            getDirection.returns(drive.POS.NORTH)
+            drive.forward()
+            sinon.assert.calledOnceWithExactly(
+                moveOrTurn,
+                car,
+                direction,
+                drive.POS.FORWARD
+            )
+        })
+    })
+    describe('drive.reverse()', function () {
+        it('should call drive.moveIt with correct args', function () {
+            moveOrTurn = sinon.spy(drive, 'moveIt')
+            getDirection.returns(drive.POS.NORTH)
+            drive.reverse()
+            sinon.assert.calledOnceWithExactly(
+                moveOrTurn,
+                car,
+                direction,
+                drive.POS.REVERSE
+            )
+        })
     })
 })
-describe('drive.turnLeft()', function () {
+
+describe('Moving car element', function () {
+    let car, direction, cmd
     before(function () {
         sinon.restore()
     })
-})
-describe('drive.forward()', function () {
-    before(function () {
+    beforeEach(function () {
+        car = document.createElement('div')
+        car.classList.add('car')
+        car.style.top = '0px'
+        car.style.left = '0px'
+    })
+    afterEach(function () {
+        console.log(cmd)
         sinon.restore()
     })
-})
-describe('drive.reverse()', function () {
-    before(function () {
-        sinon.restore()
+    describe('drive.moveIt()', function () {
+        describe("modifies the car's position in one direction by MOVE_VALUE.", function () {
+            describe('Moving forward', function () {
+                beforeEach(function () {
+                    cmd = drive.POS.FORWARD
+                })
+                describe('vertically', function () {
+                    it('should make top LESS facing NORTH', function () {
+                        car.classList.add('north')
+                        direction = drive.POS.NORTH
+
+                        let prevTop = parseInt(car.style.top)
+                        let prevLeft = parseInt(car.style.left)
+
+                        drive.moveIt(car, direction, cmd)
+
+                        let newTop = parseInt(car.style.top)
+                        let newLeft = parseInt(car.style.left)
+
+                        expect(newTop).to.equal(prevTop - drive.POS.MOVE_VALUE)
+                        expect(newLeft).to.equal(prevLeft)
+                    })
+                    it('should make top GREATER facing SOUTH', function () {
+                        car.classList.add('south')
+                        direction = drive.POS.SOUTH
+
+                        let prevTop = parseInt(car.style.top)
+                        let prevLeft = parseInt(car.style.left)
+
+                        drive.moveIt(car, direction, cmd)
+
+                        let newTop = parseInt(car.style.top)
+                        let newLeft = parseInt(car.style.left)
+
+                        expect(newTop).to.equal(prevTop + drive.POS.MOVE_VALUE)
+                        expect(newLeft).to.equal(prevLeft)
+                    })
+                })
+                describe('horizontally', function () {
+                    beforeEach(function () {})
+                    it('should make left GREATER facing EAST', function () {
+                        car.classList.add('east')
+                        direction = drive.POS.EAST
+
+                        let prevTop = parseInt(car.style.top)
+                        let prevLeft = parseInt(car.style.left)
+
+                        drive.moveIt(car, direction, cmd)
+
+                        let newTop = parseInt(car.style.top)
+                        let newLeft = parseInt(car.style.left)
+
+                        expect(newTop).to.equal(prevTop)
+                        expect(newLeft).to.equal(
+                            prevLeft + drive.POS.MOVE_VALUE
+                        )
+                    })
+                    it('should make left LESS facing WEST', function () {
+                        car.classList.add('west')
+                        direction = drive.POS.WEST
+
+                        let prevTop = parseInt(car.style.top)
+                        let prevLeft = parseInt(car.style.left)
+
+                        drive.moveIt(car, direction, cmd)
+
+                        let newTop = parseInt(car.style.top)
+                        let newLeft = parseInt(car.style.left)
+
+                        expect(newTop).to.equal(prevTop)
+                        expect(newLeft).to.equal(
+                            prevLeft - drive.POS.MOVE_VALUE
+                        )
+                    })
+                })
+            })
+            describe('Reversing:', function () {
+                beforeEach(function () {
+                    cmd = drive.POS.REVERSE
+                })
+                describe('vertically', function () {
+                    it('should make top GREATER facing NORTH', function () {
+                        car.classList.add('north')
+                        direction = drive.POS.NORTH
+
+                        let prevTop = parseInt(car.style.top)
+                        let prevLeft = parseInt(car.style.left)
+
+                        drive.moveIt(car, direction, cmd)
+
+                        let newTop = parseInt(car.style.top)
+                        let newLeft = parseInt(car.style.left)
+
+                        expect(newTop).to.equal(prevTop + drive.POS.MOVE_VALUE)
+                        expect(newLeft).to.equal(prevLeft)
+                    })
+                    it('should make top LESS facing SOUTH', function () {
+                        car.classList.add('south')
+                        direction = drive.POS.SOUTH
+
+                        let prevTop = parseInt(car.style.top)
+                        let prevLeft = parseInt(car.style.left)
+
+                        drive.moveIt(car, direction, cmd)
+
+                        let newTop = parseInt(car.style.top)
+                        let newLeft = parseInt(car.style.left)
+
+                        expect(newTop).to.equal(prevTop - drive.POS.MOVE_VALUE)
+                        expect(newLeft).to.equal(prevLeft)
+                    })
+                })
+                describe('horizontally', function () {
+                    beforeEach(function () {})
+                    it('should make left LESS facing EAST', function () {
+                        car.classList.add('east')
+                        direction = drive.POS.EAST
+
+                        let prevTop = parseInt(car.style.top)
+                        let prevLeft = parseInt(car.style.left)
+
+                        drive.moveIt(car, direction, cmd)
+
+                        let newTop = parseInt(car.style.top)
+                        let newLeft = parseInt(car.style.left)
+
+                        expect(newTop).to.equal(prevTop)
+                        expect(newLeft).to.equal(
+                            prevLeft - drive.POS.MOVE_VALUE
+                        )
+                    })
+                    it('should make left GREATER facing WEST', function () {
+                        car.classList.add('west')
+                        direction = drive.POS.WEST
+
+                        let prevTop = parseInt(car.style.top)
+                        let prevLeft = parseInt(car.style.left)
+
+                        drive.moveIt(car, direction, cmd)
+
+                        let newTop = parseInt(car.style.top)
+                        let newLeft = parseInt(car.style.left)
+
+                        expect(newTop).to.equal(prevTop)
+                        expect(newLeft).to.equal(
+                            prevLeft + drive.POS.MOVE_VALUE
+                        )
+                    })
+                })
+            })
+        })
     })
+    describe('drive.turnIt()', function () {})
 })
