@@ -1,13 +1,15 @@
 import {controlPanel} from './control-panel.js'
 
-const FORWARD = 'FORWARD'
-const REVERSE = 'REVERSE'
-const NORTH = 'NORTH'
-const SOUTH = 'SOUTH'
-const EAST = 'EAST'
-const WEST = 'WEST'
-const RIGHT = 'RIGHT'
-const LEFT = 'LEFT'
+const POS = {
+    FORWARD: 'FORWARD',
+    REVERSE: 'REVERSE',
+    NORTH: 'NORTH',
+    SOUTH: 'SOUTH',
+    EAST: 'EAST',
+    WEST: 'WEST',
+    RIGHT: 'RIGHT',
+    LEFT: 'LEFT',
+}
 
 function reverse() {
     let car = controlPanel.getSelectedCar()
@@ -124,18 +126,19 @@ function getDirection(car) {
     var classes = car.className
     var direction = ''
     if (classes.indexOf('north') > 0) {
-        direction = NORTH
+        direction = POS.NORTH
     } else if (classes.indexOf('south') > 0) {
-        direction = SOUTH
+        direction = POS.SOUTH
     } else if (classes.indexOf('east') > 0) {
-        direction = EAST
+        direction = POS.EAST
     } else if (classes.indexOf('west') > 0) {
-        direction = WEST
+        direction = POS.WEST
     }
     return direction
 }
 
 export const drive = {
+    POS,
     reverse,
     forward,
     turnRight,
