@@ -4,7 +4,6 @@ var expect = chai.expect
 
 import {controlPanel} from '../script/control-panel.js'
 import {drive} from '../script/drive.js'
-import {paint} from '../script/paint.js'
 
 describe('Buttons', function () {
     let getButton, dummyElement
@@ -368,66 +367,5 @@ describe('Car selection', function () {
             expect(cars.selectedIndex).to.equal(0)
             expect(cars[cars.selectedIndex].value).to.equal('c1')
         })
-    })
-})
-
-// Break out to separate file
-describe('paint.addCar()', function () {
-    before(function () {
-        sinon.restore()
-    })
-})
-describe('paint.randomCarArtId()', function () {
-    before(function () {
-        sinon.restore()
-    })
-    it('should not return a number below 1 or over 7 in 10,000 iterations', function () {
-        let id,
-            outofRange = false
-        for (let i = 0; i < 10000; i++) {
-            id = paint.randomCarArtId().replace('car', '')
-            if (Number(id) > 7 || Number(id) < 1) {
-                outofRange = true
-            }
-        }
-
-        expect(outofRange).to.be.false
-    })
-})
-
-// Break out to separate file
-describe('drive.moveIt()', function () {
-    before(function () {
-        sinon.restore()
-    })
-})
-describe('drive.turnIt()', function () {
-    before(function () {
-        sinon.restore()
-    })
-})
-describe('drive.getDirection()', function () {
-    before(function () {
-        sinon.restore()
-    })
-})
-describe('drive.turnRight()', function () {
-    before(function () {
-        sinon.restore()
-    })
-})
-describe('drive.turnLeft()', function () {
-    before(function () {
-        sinon.restore()
-    })
-})
-describe('drive.forward()', function () {
-    before(function () {
-        sinon.restore()
-    })
-})
-describe('drive.reverse()', function () {
-    before(function () {
-        sinon.restore()
     })
 })

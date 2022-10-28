@@ -19,10 +19,10 @@ function newCarAndUpdateUi() {
     if (cars.selectedIndex > -1) {
         controlPanel.getSelectedCar(cars).classList.toggle('selected-car')
     }
-    let carId = paint.addCar()
+    let car = paint.addCar()
     var opt = document.createElement('option')
-    opt.value = carId
-    opt.innerHTML = carId
+    opt.value = car.id
+    opt.innerHTML = car.id
     cars.appendChild(opt)
     cars.selectedIndex = cars.length - 1
     controlPanel.getSelectedCar(cars).classList.toggle('selected-car')

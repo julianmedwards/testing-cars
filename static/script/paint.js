@@ -1,15 +1,16 @@
 let carCount = 0
 
 function addCar() {
-    carCount++
+    paint.carCount++
     var car = document.createElement('div')
-    car.id = 'c' + carCount
+    car.id = 'c' + paint.carCount
     car.style.top = '0px'
     car.style.left = '0px'
-    car.className = 'car east car' + randomCarArtId()
-    document.getElementsByTagName('body')[0].appendChild(car)
+    car.className = 'car east ' + paint.randomCarArtId()
+    let body = document.getElementsByTagName('body')[0]
+    body.appendChild(car)
 
-    return car.id
+    return car
 }
 
 function randomCarArtId() {

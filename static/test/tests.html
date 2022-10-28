@@ -9,15 +9,17 @@
   <body>
     <div id="mocha"></div>
 
-    <script src="https://unpkg.com/chai/chai.js"></script>
-    <script src="https://unpkg.com/mocha/mocha.js"></script>
-    <script src="https://unpkg.com/sinon/pkg/sinon.js"></script>
+    <script src="https://unpkg.com/chai/chai.js" crossorigin></script>
+    <script src="https://unpkg.com/mocha/mocha.js " crossorigin></script>
+    <script src="https://unpkg.com/sinon/pkg/sinon.js" crossorigin></script>
 
     <script class="mocha-init">
       mocha.setup('bdd');
       mocha.checkLeaks();
     </script>
     <script src="test-control-panel.js" type="module"></script>
+    <script src="test-paint.js" type="module"></script>
+    <script src="test-drive.js" type="module"></script>
     <script class="mocha-exec" src="runtest.js" defer></script>
   </body>
 </html>
